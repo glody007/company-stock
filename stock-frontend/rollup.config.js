@@ -7,6 +7,7 @@ import css from 'rollup-plugin-css-only';
 import json from "@rollup/plugin-json";
 
 const production = !process.env.ROLLUP_WATCH;
+let mainFields = [ "browser", "main" ];
 
 function serve() {
 	let server;
@@ -40,6 +41,9 @@ export default {
 	plugins: [
 		commonjs(),
 		json(),      // <---- put after commonjs
+		resolve({
+            mainFields: mainFields
+        }),
 		svelte({
 			compilerOptions: {
 				// enable run-time checks when not in production
@@ -59,7 +63,6 @@ export default {
 			browser: true,
 			dedupe: ['svelte']
 		}),
-		commonjs(),
 
 		// In dev mode, call `npm run start` once
 		// the bundle has been generated
