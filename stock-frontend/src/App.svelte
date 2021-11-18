@@ -7,7 +7,7 @@
 
 
 	export let name;
-	let myStocks = 0, totalStoks = 0, nbrOwners = 0;
+	let myStocks = 0, totalStocks = 0, nbrOwners = 0;
 	const stockAddress = "0x5FbDB2315678afecb367f032d93F642f64180aa3"
 
 	async function requestAccount() {
@@ -44,17 +44,14 @@
 		}
 	}
 
-	async function fetchAddresse() {
+	async function fetchTotalSupply() {
 		if (typeof window.ethereum !== 'undefined') {
-			await requestAccount()
 			const provider = new ethers.providers.Web3Provider(window.ethereum)
-			const signer = provider.getSigner()
 			console.log({ provider })
-			const contract = new ethers.Contract(stockAddress, Stock.abi, signer)
+			const contract = new ethers.Contract(stockAddress, Stock.abi, provider)
 			try {
-				console.log(signer.getAddress())
-				const data = await contract.addresse()
-				console.log(data.toString())
+				const data = await contract.getTotalSupply()
+				totalStocks = data.toNumber()
 			} catch (err) {
 				console.log("Error: ", err)
 			}
@@ -66,7 +63,7 @@
       try {
         await fetchStockQte()
 				await fetchNbrOwners()
-				await fetchAddresse()
+				await fetchTotalSupply()
       } catch (err) {
         console.log("Error: ", err)
       }
@@ -105,7 +102,7 @@
 				    Total amount of stocks
 				  </div>
 				  <ul class="list-group list-group-flush">
-				    <li class="list-group-item">{totalStoks}</li>
+				    <li class="list-group-item">{totalStocks}</li>
 				  </ul>
 				</div>
 	    </div>

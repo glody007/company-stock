@@ -39,6 +39,10 @@ contract Stock {
        emit Sent(msg.sender, receiver, amount);
    }
 
+   function getTotalSupply() external view returns (uint) {
+     return totalSupply;
+   }
+
   function stockQteOf(address account) external view returns (uint) {
     return balances[account];
   }
