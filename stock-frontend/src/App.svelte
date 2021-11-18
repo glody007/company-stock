@@ -4,7 +4,7 @@
 	import { onMount } from 'svelte'
 
 	export let name;
-	let myStocks = 0, totalStoks = 0, nbrOwners = 1;
+	let myStocks = 0, totalStoks = 0, nbrOwners = 0;
 	const stockAddress = "0x5FbDB2315678afecb367f032d93F642f64180aa3"
 
 	async function requestAccount() {
@@ -25,10 +25,27 @@
     }
   }
 
+	async function fetchNbrOwners() {
+		if (typeof window.ethereum !== 'undefined') {
+			const provider = new ethers.providers.Web3Provider(window.ethereum)
+			console.log({ provider })
+			const contract = new ethers.Contract(stockAddress, Stock.abi, provider)
+			try {
+				console.log('nbrOwners')
+				const data = await contract.nbrOwners()
+				nbrOwners = data.toNumber()
+				console.log(nbrOwners)
+			} catch (err) {
+				console.log("Error: ", err)
+			}
+		}
+	}
+
 	async function refresh() {
     if (typeof window.ethereum !== 'undefined') {
       try {
         await fetchStockQte()
+				await fetchNbrOwners()
       } catch (err) {
         console.log("Error: ", err)
       }

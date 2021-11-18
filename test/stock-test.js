@@ -11,6 +11,8 @@ describe("Stock", function () {
 
     const balanceMinter = await stock.stockQte()
     expect(balanceMinter.toNumber() === 1000000)
+    const nbrOwners = await stock.nbrOwners()
+    expect(nbrOwners.toNumber() === 1)
 
     const balanceSecondOwner = await stock.stockQteOf(addressSecondOwner)
     expect(balanceSecondOwner.toNumber() === 0)
@@ -18,6 +20,9 @@ describe("Stock", function () {
     await stock.sendStockTo(addressSecondOwner, 500000)
     const balanceSecondOwnerAfter = await stock.stockQteOf(addressSecondOwner)
     expect(balanceSecondOwnerAfter.toNumber() === 500000)
+
+    const nbrOwnersAfter = await stock.nbrOwners()
+    expect(nbrOwnersAfter.toNumber() === 2)
 
   });
 });

@@ -47,6 +47,10 @@ contract Stock {
     return balances[msg.sender];
   }
 
+  function nbrOwners() external view returns (uint) {
+    return addressOwners.length;
+  }
+
   function addresse() external view returns (address) {
     return msg.sender;
   }
