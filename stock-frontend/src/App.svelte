@@ -2,6 +2,9 @@
 	import Stock from '../../artifacts/contracts/Stock.sol/Stock.json'
 	import { ethers } from 'ethers'
 	import { onMount } from 'svelte'
+	import detectEthereumProvider from '@metamask/detect-provider'
+
+
 
 	export let name;
 	let myStocks = 0, totalStoks = 0, nbrOwners = 0;
@@ -13,9 +16,11 @@
 
 	async function fetchStockQte() {
     if (typeof window.ethereum !== 'undefined') {
+			await requestAccount()
       const provider = new ethers.providers.Web3Provider(window.ethereum)
+			const signer = provider.getSigner()
       console.log({ provider })
-      const contract = new ethers.Contract(stockAddress, Stock.abi, provider)
+      const contract = new ethers.Contract(stockAddress, Stock.abi, signer)
       try {
         const data = await contract.stockQte()
         myStocks = data.toNumber()
@@ -31,10 +36,25 @@
 			console.log({ provider })
 			const contract = new ethers.Contract(stockAddress, Stock.abi, provider)
 			try {
-				console.log('nbrOwners')
 				const data = await contract.nbrOwners()
 				nbrOwners = data.toNumber()
-				console.log(nbrOwners)
+			} catch (err) {
+				console.log("Error: ", err)
+			}
+		}
+	}
+
+	async function fetchAddresse() {
+		if (typeof window.ethereum !== 'undefined') {
+			await requestAccount()
+			const provider = new ethers.providers.Web3Provider(window.ethereum)
+			const signer = provider.getSigner()
+			console.log({ provider })
+			const contract = new ethers.Contract(stockAddress, Stock.abi, signer)
+			try {
+				console.log(signer.getAddress())
+				const data = await contract.addresse()
+				console.log(data.toString())
 			} catch (err) {
 				console.log("Error: ", err)
 			}
@@ -46,6 +66,7 @@
       try {
         await fetchStockQte()
 				await fetchNbrOwners()
+				await fetchAddresse()
       } catch (err) {
         console.log("Error: ", err)
       }
