@@ -4,10 +4,10 @@
 	import { onMount } from 'svelte'
 
 	export let totalStocks = 0;
-	
+
 </script>
 
-<div class="card">
+<div class="card bg-info">
   <div class="card-header">
     Total amount of stocks
   </div>

@@ -7,7 +7,7 @@
 
 </script>
 
-<div class="card">
+<div class="card bg-warning ">
   <div class="card-header">
     Number of stoks's owner
   </div>

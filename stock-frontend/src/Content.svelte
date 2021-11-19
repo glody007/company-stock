@@ -137,7 +137,7 @@
 
 		<div class="row justify-content-center mt-5">
 			<div class="col">
-				<div class="card transfer">
+				<div class="card border-danger transfer">
 				  <h5 class="card-header">Transfer stocks</h5>
 				  <div class="card-body">
 						<form>
@@ -161,7 +161,7 @@
 				</div>
 			</div>
 			<div class="col">
-				<div class="card share">
+				<div class="card border-warning share">
 				  <h5 class="card-header">Share dividends</h5>
 				  <div class="card-body">
 				    <h5 class="card-title">Share dividents with all owners</h5>

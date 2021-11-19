@@ -7,7 +7,7 @@
 
 </script>
 
-<div class="card">
+<div class="card bg-primary">
   <div class="card-header">
     My amount of stocks
   </div>
