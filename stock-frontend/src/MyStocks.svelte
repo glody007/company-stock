@@ -3,32 +3,8 @@
 	import { ethers } from 'ethers'
 	import { onMount } from 'svelte'
 
-	let myStocks = 0;
-	export let stockAddress;
+	export let myStocks;
 
-	async function requestAccount() {
-		await window.ethereum.request({ method: 'eth_requestAccounts' });
-	}
-
-  async function fetchStockQte() {
-    if (typeof window.ethereum !== 'undefined') {
-			await requestAccount()
-      const provider = new ethers.providers.Web3Provider(window.ethereum)
-			const signer = provider.getSigner()
-      console.log({ provider })
-      const contract = new ethers.Contract(stockAddress, Stock.abi, signer)
-      try {
-        const data = await contract.stockQte()
-        myStocks = data.toNumber()
-      } catch (err) {
-        console.log("Error: ", err)
-      }
-    }
-  }
-
-	onMount(async () => {
-		fetchStockQte()
-	});
 </script>
 
 <div class="card">

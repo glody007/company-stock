@@ -14,7 +14,16 @@
 	import { onMount } from 'svelte'
 	import detectEthereumProvider from '@metamask/detect-provider'
 
-	export let name, stockAddress, addressReceiver = '', amountStocksToSend = 0;
+	export let name, stockAddress
+	let myStocks = 0, nbrOwners = 0, totalStocks = 0, amountStocksToSend = 0;
+	let addressReceiver = '';
+	let transfering = false, sharing = false ;
+	let user = { loggedIn: false };
+
+
+	function toggleTransfering() {
+		transfering = !transfering
+	}
 
   async function requestAccount() {
     await window.ethereum.request({ method: 'eth_requestAccounts' });
@@ -23,6 +32,7 @@
   async function transferStocks() {
     if (typeof window.ethereum !== 'undefined') {
       await requestAccount()
+			toggleTransfering()
       const provider = new ethers.providers.Web3Provider(window.ethereum)
       const signer = provider.getSigner()
       console.log({ provider })
@@ -31,7 +41,9 @@
         const data = await contract.sendStockTo(addressReceiver, amountStocksToSend)
         addressReceiver = 0
         amountStocksToSend = 0
+				toggleTransfering()
       } catch (err) {
+				toggleTransfering()
         console.log("Error: ", err)
       }
     }
@@ -40,17 +52,74 @@
   async function shareDividentes() {
     if (typeof window.ethereum !== 'undefined') {
       await requestAccount()
+			toggleTransfering()
       const provider = new ethers.providers.Web3Provider(window.ethereum)
       const signer = provider.getSigner()
       console.log({ provider })
       const contract = new ethers.Contract(stockAddress, Stock.abi, signer)
       try {
         await contract.distribute()
+				toggleTransfering()
       } catch (err) {
+				toggleTransfering()
         console.log("Error: ", err)
       }
     }
   }
+
+	async function fetchStockQte() {
+		if (typeof window.ethereum !== 'undefined') {
+			await requestAccount()
+			const provider = new ethers.providers.Web3Provider(window.ethereum)
+			const signer = provider.getSigner()
+			console.log({ provider })
+			const contract = new ethers.Contract(stockAddress, Stock.abi, signer)
+			try {
+				const data = await contract.stockQte()
+				myStocks = data.toNumber()
+			} catch (err) {
+				console.log("Error: ", err)
+			}
+		}
+	}
+
+	async function fetchNbrOwners() {
+		if (typeof window.ethereum !== 'undefined') {
+			const provider = new ethers.providers.Web3Provider(window.ethereum)
+			console.log({ provider })
+			const contract = new ethers.Contract(stockAddress, Stock.abi, provider)
+			try {
+				const data = await contract.nbrOwners()
+				nbrOwners = data.toNumber()
+			} catch (err) {
+				console.log("Error: ", err)
+			}
+		}
+	}
+
+	async function fetchTotalSupply() {
+		if (typeof window.ethereum !== 'undefined') {
+			const provider = new ethers.providers.Web3Provider(window.ethereum)
+			console.log({ provider })
+			const contract = new ethers.Contract(stockAddress, Stock.abi, provider)
+			try {
+				const data = await contract.getTotalSupply()
+				totalStocks = data.toNumber()
+			} catch (err) {
+				console.log("Error: ", err)
+			}
+		}
+	}
+
+	async function refresh() {
+		fetchStockQte()
+		fetchNbrOwners()
+		fetchTotalSupply()
+	}
+
+	onMount(async () => {
+		refresh()
+	});
 </script>
 
 <main>
@@ -79,8 +148,14 @@
 						    <input type="number" bind:value={amountStocksToSend} class="form-control" id="amount"  placeholder="0">
 						  </div>
 						</form>
-						<Button on:click={transferStocks} class="btn btn-danger btn-lg active" role="button" aria-pressed="true">
-							Transfer
+						<Button on:click={transferStocks} class="btn btn-danger btn-lg" disabled={transfering} role="button" aria-pressed="true">
+							<span class:spinner-grow="{transfering}"  role="status" aria-hidden="true"></span>
+							{#if transfering}
+						  	Loading...
+							{/if}
+							{#if !transfering}
+								Transfer
+							{/if}
 						</Button>
 				  </div>
 				</div>
@@ -91,8 +166,14 @@
 				  <div class="card-body">
 				    <h5 class="card-title">Share dividents with all owners</h5>
 				    <p class="card-text">the quantity of money on this address will be distributed to each holder of the stocks in proportion to the stocks he has.</p>
-						<Button on:click={shareDividentes} class="btn btn-warning btn-lg active mt-5" role="button" aria-pressed="true">
-							Share
+						<Button on:click={shareDividentes} class="btn btn-warning btn-lg active mt-5" disabled={transfering} role="button" aria-pressed="true">
+							<span class:spinner-grow="{transfering}"  role="status" aria-hidden="true"></span>
+							{#if transfering}
+						  	Loading...
+							{/if}
+							{#if !transfering}
+								Share
+							{/if}
 						</Button>
 				  </div>
 				</div>
@@ -101,13 +182,13 @@
 
 		<div class="row justify-content-center mt-5">
 	    <div class="col mt-2">
-				<MyStocks stockAddress={stockAddress} />
+				<MyStocks myStocks={myStocks} />
 	    </div>
 	    <div class="col mt-2">
-				<TotalStocks stockAddress={stockAddress} />
+				<TotalStocks totalStocks={totalStocks} />
 	    </div>
 	    <div class="col mt-2">
-				<NumberOfOwners stockAddress={stockAddress} />
+				<NumberOfOwners nbrOwners={nbrOwners} />
 	    </div>
 	  </div>
 
