@@ -14,13 +14,43 @@
 	import { onMount } from 'svelte'
 	import detectEthereumProvider from '@metamask/detect-provider'
 
-	export let name, stockAddress;
+	export let name, stockAddress, addressReceiver = '', amountStocksToSend = 0;
 
-  const { open } = getContext('simple-modal');
+  async function requestAccount() {
+    await window.ethereum.request({ method: 'eth_requestAccounts' });
+  }
 
-	const showTransferStocks = () => {
-	 open(TransferStocks);
- };
+  async function transferStocks() {
+    if (typeof window.ethereum !== 'undefined') {
+      await requestAccount()
+      const provider = new ethers.providers.Web3Provider(window.ethereum)
+      const signer = provider.getSigner()
+      console.log({ provider })
+      const contract = new ethers.Contract(stockAddress, Stock.abi, signer)
+      try {
+        const data = await contract.sendStockTo(addressReceiver, amountStocksToSend)
+        addressReceiver = 0
+        amountStocksToSend = 0
+      } catch (err) {
+        console.log("Error: ", err)
+      }
+    }
+  }
+
+  async function shareDividentes() {
+    if (typeof window.ethereum !== 'undefined') {
+      await requestAccount()
+      const provider = new ethers.providers.Web3Provider(window.ethereum)
+      const signer = provider.getSigner()
+      console.log({ provider })
+      const contract = new ethers.Contract(stockAddress, Stock.abi, signer)
+      try {
+        await contract.distribute()
+      } catch (err) {
+        console.log("Error: ", err)
+      }
+    }
+  }
 </script>
 
 <main>
@@ -44,12 +74,12 @@
 						<form>
 						  <div class="form-group">
 						    <label for="address">Address of receiver</label>
-						    <input type="number" class="form-control" id="address"  placeholder="0">
+						    <input bind:value={addressReceiver} class="form-control" id="address"  placeholder="0">
 								<label for="amount">Amount of stocks</label>
-						    <input type="number" class="form-control" id="amount" placeholder="0">
+						    <input type="number" bind:value={amountStocksToSend} class="form-control" id="amount"  placeholder="0">
 						  </div>
 						</form>
-						<Button class="btn btn-danger btn-lg active" role="button" aria-pressed="true">
+						<Button on:click={transferStocks} class="btn btn-danger btn-lg active" role="button" aria-pressed="true">
 							Transfer
 						</Button>
 				  </div>
@@ -61,7 +91,7 @@
 				  <div class="card-body">
 				    <h5 class="card-title">Share dividents with all owners</h5>
 				    <p class="card-text">the quantity of money on this address will be distributed to each holder of the stocks in proportion to the stocks he has.</p>
-						<Button class="btn btn-warning btn-lg active mt-5" role="button" aria-pressed="true">
+						<Button on:click={shareDividentes} class="btn btn-warning btn-lg active mt-5" role="button" aria-pressed="true">
 							Share
 						</Button>
 				  </div>
