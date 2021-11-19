@@ -3,6 +3,7 @@
 	import NumberOfOwners from './NumberOfOwners.svelte';
 	import MyStocks from './MyStocks.svelte';
 	import TotalStocks from './TotalStocks.svelte';
+	import Owners from './Owners.svelte';
 	import { ethers } from 'ethers'
 	import { onMount } from 'svelte'
 	import detectEthereumProvider from '@metamask/detect-provider'
@@ -18,7 +19,7 @@
 			<h1>Decentralized {name}</h1>
 		</div>
 		<div class="row justify-content-center">
-			<p>Dapp for decentralized stock-option</p>
+			<h4>Dapp for decentralized stock options</h4>
 		</div>
 
 		<div class="row justify-content-center mt-5">
@@ -31,6 +32,16 @@
 	    <div class="col mt-2">
 				<NumberOfOwners stockAddress={stockAddress} />
 	    </div>
+	  </div>
+
+		<div class="row justify-content-center mt-5">
+			<h5>All owners and their stocks</h5>
+		</div>
+
+		<div class="row">
+			<div class="col-12 mt-2">
+	    	<Owners stockAddress={stockAddress} />
+			</div>
 	  </div>
 
 	</div>

@@ -24,5 +24,7 @@ describe("Stock", function () {
     const nbrOwnersAfter = await stock.nbrOwners()
     expect(nbrOwnersAfter.toNumber() === 2)
 
+    const owners = await stock.getOwners()
+    expect(owners.toString().split(',').length === 2)
   });
 });

@@ -29,16 +29,14 @@
 	});
 </script>
 
-<main>
-	<div class="card" style="width: 18rem;">
-	  <div class="card-header">
-	    Number of stoks's owner
-	  </div>
-	  <ul class="list-group list-group-flush">
-	    <li class="list-group-item">{nbrOwners}</li>
-	  </ul>
-	</div>
-</main>
+<div class="card" style="width: 18rem;">
+  <div class="card-header">
+    Number of stoks's owner
+  </div>
+  <ul class="list-group list-group-flush">
+    <li class="list-group-item">{nbrOwners}</li>
+  </ul>
+</div>
 
 <style>
 

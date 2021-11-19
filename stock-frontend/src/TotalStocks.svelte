@@ -29,16 +29,14 @@
 	});
 </script>
 
-<main>
-  <div class="card" style="width: 18rem;">
-    <div class="card-header">
-      Total amount of stocks
-    </div>
-    <ul class="list-group list-group-flush">
-      <li class="list-group-item">{totalStocks}</li>
-    </ul>
+<div class="card" style="width: 18rem;">
+  <div class="card-header">
+    Total amount of stocks
   </div>
-</main>
+  <ul class="list-group list-group-flush">
+    <li class="list-group-item">{totalStocks}</li>
+  </ul>
+</div>
 
 <style>
 

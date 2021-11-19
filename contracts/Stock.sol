@@ -39,6 +39,14 @@ contract Stock {
        emit Sent(msg.sender, receiver, amount);
    }
 
+   function getOwners() external view returns (address[] memory) {
+    address[] memory ret = new address[](addressOwners.length);
+    for (uint i = 0; i < addressOwners.length; i++) {
+        ret[i] = addressOwners[i];
+    }
+     return ret;
+   }
+
    function getTotalSupply() external view returns (uint) {
      return totalSupply;
    }
