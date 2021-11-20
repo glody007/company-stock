@@ -53,9 +53,9 @@
     </tr>
   </thead>
   <tbody>
-    {#each owners as owner}
+    {#each owners as owner, i}
     <tr>
-      <th scope="row">1</th>
+      <th scope="row">{i}</th>
       <td>{owner}</td>
       <td>
         {#await getStocksOf(owner)}
