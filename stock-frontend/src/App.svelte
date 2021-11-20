@@ -12,5 +12,7 @@
 </main>
 
 <style>
-
+	main {
+		background-image: url("background.jpg");
+	}
 </style>
